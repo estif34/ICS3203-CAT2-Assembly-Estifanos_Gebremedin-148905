@@ -1,6 +1,6 @@
 # ICS3203-CAT2-Assembly-Estifanos_Gebremedin-148905
 
-## Task 1: Number Check
+# Task 1: Control Flow and Conditional Logic
 
 This assembly program checks whether a number entered by the user is positive, negative, or zero. The program reads input from the user, converts it to an integer, and then displays the appropriate message based on the value of the number.
 
@@ -73,7 +73,7 @@ To compile and run this program, follow these steps:
 ### Challenges
 String to Integer Conversion: Converting the input string to an integer manually in assembly is complex. Each character in the string must be processed and converted from its ASCII representation to a numeric value, which was done using the `string_to_int` function.
 
-## Task 2: Array Reversal
+# Task 2: Array Manipulation with Looping and Reversal
 ### Purpose:
 1. Accept 5 integers as input from the user, entered as single-digit space-separated values.
    - The program first prints a prompt message to the user asking for 5 integers to be entered.
@@ -129,3 +129,62 @@ To compile and run this program, follow these steps:
 ### Challenges
 - Ensuring that the loop correctly terminates when the start pointer (esi) meets or exceeds the end pointer (edi) is crucial to prevent out-of-bounds memory access or unnecessary swaps.
   This step involves direct manipulation of the array's elements in memory, which requires precise handling of register contents to avoid corrupting data.
+
+
+# Task 3: Modular Program with Subroutines for Factorial Calculation
+### Purpose:
+The purpose of this program is to compute the factorial of a number between 0 and 9 input by the user. It prompts the user for a number, calculates the factorial of that number, and then prints the result.
+
+### Overview
+1. Prompting the User: The program starts by printing the prompt message "Enter a number (0-9):" using the int 0x80 system call for output (syscall number 4).
+
+2. Reading the Input: After displaying the prompt, the program reads the user's input (a single digit number) using the int 0x80 system call (syscall number 3 for input). The input is stored as a string in the input buffer.
+
+3. Converting the Input: The program converts the character input (which is ASCII) to its corresponding integer value by subtracting the ASCII value of '0' (sub eax, '0'). This result is stored in the eax register.
+
+4. Factorial Calculation:
+
+  - The program initializes the result to 1 in the result variable (mov dword [result], 1).
+  - It checks if the input number is less than or equal to 1. If so, it skips the multiplication loop.
+  - The program then enters a loop (factorial_loop) where it multiplies the current result by the current number (mul ebx) and stores the updated result back in result.
+  - It then decrements the number (dec ebx) and continues looping until the number is 1 or less.
+
+5. Displaying the Result:
+    Once the factorial is computed, the program prints "Factorial is: " using the int 0x80 syscall (syscall number 4).
+    It then calls print_number to print the result (the factorial) as a string by converting it from its numeric form into an ASCII representation.
+    Exiting the Program: After printing the result, the program exits by calling int 0x80 with eax set to 1 (syscall number for exit) and ebx set to 0 (exit code).
+#### Register Management
+
+### Compiling and Running the Program
+
+To compile and run this program, follow these steps:
+
+1. **Save the Code**:
+   Save the assembly code in a file named `task3.asm`.
+
+2. **Assemble and Link**:
+   - Use `nasm` to assemble the code:
+     ```bash
+     nasm -f elf32 task3.asm -o task3.o
+     ```
+   - Use `ld` to link the object file and create the executable:
+     ```bash
+     ld -m elf_i386 -o task3 task3.o
+     ```
+
+3. **Run the Program**:
+   - Execute the program with:
+     ```bash
+     ./task3
+     ```
+4. **Example Run**:
+   ```bash
+   Enter a number (0-9):4
+   Factorial is: 24
+
+  ### Challenges
+  Factorial Logic: Writing the loop for factorial calculation required managing the decrementing of the input number (stored in ebx) and multiplying the current result. Using the mul instruction was straightforward, but understanding      how to preserve the value of the result while updating it within the loop was important.
+  Register Management: ensuring that values are preserved (e.g., by using the stack for saving states when needed) or manipulated directly in registers (like eax for input and result) was key to keeping the program functioning  
+  efficiently.
+
+# Task 4: 
