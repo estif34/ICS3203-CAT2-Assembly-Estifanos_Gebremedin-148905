@@ -187,4 +187,51 @@ To compile and run this program, follow these steps:
   Register Management: ensuring that values are preserved (e.g., by using the stack for saving states when needed) or manipulated directly in registers (like eax for input and result) was key to keeping the program functioning  
   efficiently.
 
-# Task 4: 
+# Task 4: Data Monitoring and Control Using Port-Based Simulation
+### Purpose
+This assembly program simulates a system that takes input from a sensor value (ranging from 0 to 3) and performs different actions based on that input. The actions are as follows:
+
+- If the sensor value is 3, an alarm is triggered, and the message "ALARM TRIGGERED" is displayed.
+- If the sensor value is 2, the motor is turned off, and the message "Motor OFF" is displayed.
+- If the sensor value is 1, the motor is turned on, and the message "Motor ON" is displayed.
+- If the sensor value is 0, the motor is also turned off by default, and the message "Motor OFF" is displayed.
+
+#### Overview
+- The program first prints a prompt ("Enter a sensor value (0-3): "), requesting the user to input a value between 0 and 3. This is done via the sys_write system call. The program then uses the `sys_read` system call to capture the input entered by the user. In a practical situation this data would be collected from a sensor.
+- The input is read as an ASCII character (e.g., the user types '1', '2', etc.). The program converts the ASCII value into an integer using the sub al, '0' instruction (which subtracts the ASCII value of '0' from the input character).
+  This gives a number between 0 and 3, which is then stored in the eax register for further processing.
+- The program compares the integer value of eax with different conditions:
+  If `eax == 3`, it jumps to the trigger_alarm label, where the message "ALARM TRIGGERED" is printed.
+  If `eax == 2`, it jumps to the stop_motor label, where the message "Motor OFF" is printed.
+  If `eax == 1`, it jumps to the start_motor label, where the message "Motor ON" is printed.
+  If none of these conditions match (i.e., eax == 0), the program defaults to motor_off, printing "Motor OFF".
+### Compiling and Running the Program
+
+To compile and run this program, follow these steps:
+
+1. **Save the Code**:
+   Save the assembly code in a file named `task4.asm`.
+
+2. **Assemble and Link**:
+   - Use `nasm` to assemble the code:
+     ```bash
+     nasm -f elf64 task4.asm -o task4.o
+     ```
+   - Use `ld` to link the object file and create the executable:
+     ```bash
+     ld task4.o -o task4
+     ```
+
+3. **Run the Program**:
+   - Execute the program with:
+     ```bash
+     ./task4
+4. **Example Run**:
+   ```bash
+    Enter a sensor value (1-3): 3
+    ALARM TRIGGERED
+
+### Insights and Challenges
+- The program effectively uses conditional branching (`cmp`, `je`, `jmp`) to determine the appropriate action based on the sensor input.
+- Converting user input from ASCII characters to integer values (sub al, '0') can be tricky, especially if not familiar with character encoding. This step is crucial for interpreting the input correctly.
+- The program lacks error handling for invalid inputs. It assumes that the user will always enter a valid value between 0 and 3, which might not always be the case in a real-world scenario.
