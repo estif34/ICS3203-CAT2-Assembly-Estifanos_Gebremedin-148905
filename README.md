@@ -73,4 +73,59 @@ To compile and run this program, follow these steps:
 ### Challenges
 String to Integer Conversion: Converting the input string to an integer manually in assembly is complex. Each character in the string must be processed and converted from its ASCII representation to a numeric value, which was done using the `string_to_int` function.
 
-## Task 2: 
+## Task 2: Array Reversal
+### Purpose:
+1. Accept 5 integers as input from the user, entered as single-digit space-separated values.
+   - The program first prints a prompt message to the user asking for 5 integers to be entered.
+   - The program reads one character at a time from the input. Each character is processed and stored as a single integer, but only one digit can be entered per integer (i.e., the program currently cannot handle multi-digit numbers).
+   - The characters entered by the user (representing the digits 0–9) are converted from their ASCII values into integers. Each integer is stored in an array (which is reserved in memory).
+   - This array stores exactly 5 integers, each taking up 4 bytes (the size of a DWORD).
+3. Reverse the order of the integers stored in an array.
+   - It swaps the elements at the first and last positions, then the second and second-to-last positions, and so on, until the array is reversed.
+   - ```asm
+     reverse_loop:
+       cmp esi, edi            ; Check if start index (esi) >= end index (edi)
+       jge print_results       ; If indices have crossed, jump to print_results
+
+      ; Swap elements at indices esi and edi
+      mov eax, [array + esi*4]     ; Load the element at start index into eax
+      mov ebx, [array + edi*4]     ; Load the element at end index into ebx
+      mov [array + esi*4], ebx     ; Store the element from end index at the start index
+      mov [array + edi*4], eax     ; Store the element from start index at the end index
+      
+      inc esi                      ; Increment start index
+      dec edi                      ; Decrement end index
+      jmp reverse_loop             ; Repeat the loop
+
+4. Print the reversed array to the console.
+
+   
+### Compiling and Running the Program
+
+To compile and run this program, follow these steps:
+
+1. **Save the Code**:
+   Save the assembly code in a file named `task2.asm`.
+
+2. **Assemble and Link**:
+   - Use `nasm` to assemble the code:
+     ```bash
+     nasm -f elf64 -o task2.asm task2.o
+     ```
+   - Use `ld` to link the object file and create the executable:
+     ```bash
+     ld task2.o -o task2
+     ```
+
+3. **Run the Program**:
+   - Execute the program with:
+     ```bash
+     ./task2
+     ```
+4. 4. **Example Run**:
+   ```bash
+     Enter 5 integers (space-separated):1 2 3 2 1
+     Reversed array: 1 2 3 2 1
+### Challenges
+- Ensuring that the loop correctly terminates when the start pointer (esi) meets or exceeds the end pointer (edi) is crucial to prevent out-of-bounds memory access or unnecessary swaps.
+  This step involves direct manipulation of the array's elements in memory, which requires precise handling of register contents to avoid corrupting data.
